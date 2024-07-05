@@ -42,22 +42,35 @@ def get_top_news(location):
 
 def handle_command(query):
     global chatStr
-    chatStr += f"User: {query}\nJarvis: "
+    chatStr += f"User: {query}\nCompanion: "
 
-    if "open jobs".lower() in query.lower():
+    predefined_responses = {
+        "hey companion how are you": "I'm just a program, but I'm here to help you!",
+        "hey companion how are you doing": "I'm doing great, thank you! How can I assist you today?",
+        # Add more predefined questions and answers here
+    }
+
+    normalized_query = query.lower().strip()
+
+    if normalized_query in predefined_responses:
+        response = predefined_responses[normalized_query]
+        chatStr += f"{response}\n"
+        return response
+
+    if "open jobs" in normalized_query:
         webbrowser.open("http://localhost:8501/")
         response = "Opening jobs page for you."
         chatStr += f"{response}\n"
         return response
 
-    if "weather at".lower() in query.lower():
-        location = query.lower().split("weather at")[1].strip()
+    if "weather at" in normalized_query:
+        location = normalized_query.split("weather at")[1].strip()
         response = get_weather(location)
         chatStr += f"{response}\n"
         return response
 
-    if "news at".lower() in query.lower():
-        location = query.lower().split("news at")[1].strip()
+    if "news at" in normalized_query:
+        location = normalized_query.split("news at")[1].strip()
         response = get_top_news(location)
         chatStr += f"{response}\n"
         return response
@@ -69,13 +82,13 @@ def handle_command(query):
     }
 
     for site, url in sites.items():
-        if f"open {site}".lower() in query.lower():
+        if f"open {site}" in normalized_query:
             webbrowser.open(url)
             response = f"Opening {site} for you."
             chatStr += f"{response}\n"
             return response
 
-    if "open facetime".lower() in query.lower():
+    if "open facetime" in normalized_query:
         os.system("open /System/Applications/FaceTime.app")
         response = "Opening FaceTime for you."
         chatStr += f"{response}\n"
